@@ -1,0 +1,35 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage{import}
+
+\usepackage{url}
+\usepackage{hyperref}
+
+\usepackage{graphicx}
+
+\usepackage{amsfonts, amssymb, amsmath}
+
+\import{preamble}{layout}
+\import{preamble}{fonts}
+\import{preamble}{title}
+
+\begin{document}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+\listoffigures
+
+\import{sections}{sec_introduction}
+\import{sections}{sec_Classification}
+\import{sections}{sec_regression}
+\import{sections}{sec_clustering}
+\import{sections}{sec_dimensionReduction}
+\import{sections}{sec_reinforcementLearning}
+\import{sections}{sec_anomalyDetection}
+\import{sections}{sec_conclusion}
+
+\newpage
+\bibliography{bibliography}
+\bibliographystyle{unsrt}
+\end{document}
