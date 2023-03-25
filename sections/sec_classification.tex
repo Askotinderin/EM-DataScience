@@ -62,11 +62,10 @@
     \item \textlatin{SVM (Support Vector Machine)}
     \item \textlatin{k-NN (k Nearest Neighbors)}
     \item \textlatin{Decision trees}
-    \item \textlatin{SGD (Stochastic Gradient Descent)}
     \item \textlatin{Random Forest}
-    \item Νευρωνικά Δίκτυα \textlatin{Neural Networks}
     \item \textlatin{LDA (Linear Discriminant Analysis)}
     \item \textlatin{QDA (Quadratic Discriminant Analysis)}
+    \item Νευρωνικά δίκτυα (τα οποία θα αναλύσουμε στην παλινδρόμηση)
 \end{itemize}
 
 \subsection{\textlatin{Naive Bayes}}
@@ -159,6 +158,12 @@ $$P(y)\times\prod\limits_{i=1}^nP(x_i|y)$$
 
 Υπάρχουν πολλές άλλες χρήσεις πέρα από αυτές. Για μια πιο αναλυτική εξήγηση των μαθηματικών
 του αλγορίθμου μπορείτε να διαβάσετε την εξής έρευνα \cite{rish2001empirical}.
+
+Οι αλγόριθμοι \textlatin{QDA} και \textlatin{QDA} χρησιμοποιούν επίσης τον τύπο του
+\textlatin{Bayes}. Η διαφορά είναι στον τρόπο υπολογισμού του παράγοντα $P(X|y)$. Όπως και Ο
+Αλγόριθμος \textlatin{Naive Bayes} κάνει μια υπόθεση για να τον υπολογίσει, το ίδιο κάνουν και
+αυτοί οι αλγόριθμοι. Για να δείτε αυτούς τους τύπους με πλήρη εξήγηση μπορείτε να δείτε το
+παράρτημα Α.
 
 \subsection{\textlatin{Support Vector Machine}}
 Οι μηχανές διανυσμάτων υποστήριξης (\textlatin{SVM}) είναι ένα σύνολο μεθόδων εποπτευόμενης
@@ -305,7 +310,7 @@ $$D=\left(\sum\limits_{i=1}^{n}\left\lvert x_i-y_i\right\rvert^p\right)^{\frac{1
 κέντρο τους με μετρική την απόσταση \textlatin{Minkowski} για διαφορετικά $p$
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{images/minkowskiDistance.png}
+    \includegraphics[width=0.6\textwidth]{images/minkowskiDistance.png}
     \caption{Απόσταση \textlatin{Minkowski}}
 \end{figure}
 

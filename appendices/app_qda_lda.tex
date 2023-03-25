@@ -1,0 +1,40 @@
+\newpage
+\section{Τύποι για \textlatin{QDA, LDA}}
+Στον αλγόριθμο \textlatin{QDA} ο παράγοντας $P(X|y)$ δίνεται από τον τύπο:
+$$\mathlarger{P(X|y=k)=\frac{1}{(2\pi)^\frac{n}{2}\left\lvert \sum_k\right\rvert^\frac{1}{2}}\mathlarger{e}^{-\frac{1}{2}(X-M_k)^T\sum_k^{-1}(X-M_k)}}$$
+όπου:
+\begin{description}
+    \item[$k$] η κλάση που εξετάζουμε
+    \item[$X$] το διάνυσμα χαρακτηριστικών του δείγματος
+    \item[$M_k$] το κέντρο των σημείων της κλάσης $k$
+    \item[$n$] η διάσταση του $X$
+    \item[$\sum_k$] ο πίνακας συνδιακύμανσης
+\end{description}
+και
+$$\mathlarger{X=\left\langle x_1,x_2,\dots,x_n\right\rangle}$$
+αν τα σημεία που ανήκουν στην κλάση $k$ είναι $K_1,K_2,\dots,K_m$ με:
+$$\mathlarger{K_i=\left\langle k_{i_1},k_{i_2},\dots,k_{i_n}\right\rangle}$$
+τότε το $M$ για αυτή την κλάση θα είναι:
+$$\mathlarger{\mathlarger{M=\left\langle m_1,m_2,\dots,m_n\right\rangle =\left\langle \frac{1}{m}\sum\limits_{i=1}^{m}k_{i_1},\frac{1}{m}\sum\limits_{i=1}^{m}k_{i_2},\dots,\frac{1}{m}\sum\limits_{i=1}^{m}k_{i_n}\right\rangle}}$$
+Η διακύμανση είναι μας δείχνει τη διασπορά των σημείων της κλάσης από το κέντρο
+της κλάσης για μια συγκεκριμένη διάσταση και υπολογίζεται για κάθε διάσταση
+ξεχωριστά. Η διακύμανση για μια διάσταση $u$ από τις $n$ διαστάσεις θα είναι:
+$$\mathlarger{V_u=\frac{1}{m}\sum\limits_{i=1}^{m}\left(k_{i_u}-m_u\right)^2}$$
+Πολύ παρόμοια είναι και η συνδιακύμανση η οποία όμως υπολογίζεται για δύο
+διαστάσεις $u$ και $z$:
+$$\mathlarger{C_{uz}=\frac{1}{m}\sum\limits_{i=1}^{m}\left(k_{i_u}-m_u\right)\left(k_{i_z}-m_z\right)}$$
+Ο πίνακας συνδιακύμανσης είναι ένας συμμετρικός πίνακας με διαστάσεις
+$n\times n$ και είναι:
+$$
+\sum =
+\begin{bmatrix}
+    V_1 & C_{12} & \dots & C_{1n} \\
+    C_{12} & V_2 & \dots & C_{2n} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    C_{1n} & C_{2n} & \dots & V_n
+\end{bmatrix}
+$$
+
+Ο αλγόριθμος \textlatin{LDA} είναι μια απλοποίηση του \textlatin{QDA} όπου
+θεωρούμε ότι όλες οι κλάσεις έχουν τον ίδιο πίνακα συνδιακύμανσης το οποίο
+απλοποιεί πάρα πολύ τις πράξεις.
