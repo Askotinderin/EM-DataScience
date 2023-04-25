@@ -1,15 +1,82 @@
 \documentclass[12pt, a4paper]{article}
 \usepackage{import}
+\usepackage{xcolor}
 \usepackage{url}
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{amsfonts, amssymb, amsmath}
 \usepackage[super,square]{natbib}
-
 \usepackage{relsize}
+\usepackage{listings}
 
 \import{preamble}{layout}
 \import{preamble}{fonts}
+
+\lstdefinestyle{cppstyle}{
+    language = C++,
+    basicstyle = \small\ttfamily\color{black},
+    commentstyle = \color{gray!90!black},
+    stringstyle = \color{blue!80!black},
+    keywordstyle = \color{red!80!black},
+    numberstyle = \color{gray!80!black},
+    showstringspaces = false,
+    numbers = left,
+    frame = tBRl,
+    backgroundcolor = \color{gray!20},
+    rulecolor = \color{gray!20},
+    rulesepcolor = \color{gray!80!black},
+    captionpos = b,
+    classoffset=1,
+    morekeywords={std},
+    keywordstyle=\color{violet!80!black},
+    classoffset=0,
+    mathescape = true,
+    literate=%
+    *{0}{{{\color{cyan!50}0}}}1
+    {1}{{{\color{cyan!50!black}1}}}1
+    {2}{{{\color{cyan!50!black}2}}}1
+    {3}{{{\color{cyan!50!black}3}}}1
+    {4}{{{\color{cyan!50!black}4}}}1
+    {5}{{{\color{cyan!50!black}5}}}1
+    {6}{{{\color{cyan!50!black}6}}}1
+    {7}{{{\color{cyan!50!black}7}}}1
+    {8}{{{\color{cyan!50!black}8}}}1
+    {9}{{{\color{cyan!50!black}9}}}1
+    {+}{{{\color{red!80!black}+}}}1
+    {-}{{{\color{red!80!black}-}}}1
+    {*}{{{\color{red!80!black}*}}}1
+    {/\ }{{{\color{red!80!black}\ /\ }}}1
+    {=}{{{\color{red!80!black}=}}}1
+    {<}{{{\color{red!80!black}<}}}1
+    {>}{{{\color{red!80!black}>}}}1
+    {|}{{{\color{red!80!black}|}}}1
+    {&}{{{\color{red!80!black}\&}}}1
+    {^}{{{\color{red!80!black}^}}}1
+    {!}{{{\color{red!80!black}!}}}1
+    {\%}{{{\color{red!80!black}\%}}}1
+    {:}{{{\color{red!80!black}:}}}1
+    {::}{{{\color{green!60!black}::}}}1
+    {.}{{{\color{green!60!black}.}}}1
+    {\{}{{{\color{blue!50!black}\{}}}1
+    {\}}{{{\color{blue!50!black}\}}}}1
+    {->}{{{\color{green!60!black}\ ->\ }}}1
+    {[}{{{\color{orange!80!black}[}}}1
+    {]}{{{\color{orange!80!black}]}}}1
+    {(}{{{\color{green!60!black}(}}}1
+    {)}{{{\color{green!60!black})}}}1
+}
+
+\lstdefinestyle{csvstyle}{
+    basicstyle = \ttfamily\color{black},
+    numberstyle = \color{gray!80!black},
+    showstringspaces = false,
+    numbers = left,
+    frame = tBRl,
+    backgroundcolor = \color{gray!20},
+    rulecolor = \color{gray!20},
+    rulesepcolor = \color{gray!80!black},
+    captionpos = b,
+}
 
 \begin{document}
 \import{preamble}{title}
@@ -21,6 +88,7 @@
 \import{sections}{sec_Classification}
 \import{sections}{sec_regression}
 \import{sections}{sec_clustering}
+\import{sections}{sec_implementation}
 \import{sections}{sec_conclusion}
 \newpage
 \bibliographystyle{unsrt}
