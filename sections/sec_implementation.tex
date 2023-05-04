@@ -1,122 +1,116 @@
 \newpage
 \section{Υλοποίηση}
 Όπως έχουμε ήδη αναφέρει, για την υλοποίηση αλγορίθμων θα χρησιμοποιήσουμε την γλώσσα \textlatin{C++} και σκοπός μας είναι τα μοντέλα που θα δημιουργήσουμε να είναι εύχρηστα και επαναχρησιμοποιήσιμα και από
-άλλους χρήστες. Θα χρειαστεί επομένως να δημιουργήσουμε κάποια εργαλεία με γενική χρήση.
-\subsection{\textlatin{CSV Parser}}
-Πριν μπορέσουμε να ξεκινήσουμε την υλοποίηση αλγορίθμων θα χρειαστούμε έναν τρόπο για να μεταφέρουμε τα δεδομένα μας μέσα στο πρόγραμμα μας. Ο πιο συνηθισμένος τύπος αρχείου για δεδομένα είναι αυτός με την
-κατάληξη \textlatin{.csv (comma separated values)}. Όπως φαίνεται και από το όνομα είναι ένα αρχείο στο οποία τα δεδομένα είναι διαχωρισμένα με κόμμα. Ένα παράδειγμα είναι το παρακάτω:
-\begin{otherlanguage}{english}
-\begin{lstlisting}[style=csvstyle, caption = \textlatin{diabetes.csv}]
-glucose,bloodpressure,diabetes
-40,85,0
-40,92,0
-45,63,1
-45,80,0
-40,73,1
-45,82,0
-40,85,0
-30,63,1
-65,65,1
-45,82,0
-\end{lstlisting}
-\end{otherlanguage}
-Το παραπάνω αρχείο μας δίνει δείγματα τα οποία έχουν ως στοιχεία τη γλυκόζη, την πίεση και τα αν έχουν ή όχι διαβήτη, όπου κάθε καινούρια σειρά είναι και ένα διαφορετικό δείγμα. Θα φτιάξουμε μια συνάρτηση τώρα ώστε να εισάγουμε αυτά τα
-δεδομένα στο πρόγραμμα μας. Επιπλέον θα φτιάξουμε και μια συνάρτηση για να εμφανίζουμε αυτά τα δεδομένα ώστε να επιβεβαιώσουμε ότι η συνάρτηση δουλεύει σωστά. Για να το κάνουμε αυτό θα χρησιμοποιήσουμε κάποια \textlatin{templates} που μας
-παρέχει η \textlatin{C++} τα οποία υπάρχουν στους παρακάτω \textlatin{headers}:
-\begin{otherlanguage}{english}
-\begin{lstlisting}[style=cppstyle, caption = parser includes]
-#pragma once
+άλλους χρήστες. Θα χρειαστεί επομένως να δημιουργήσουμε κάποια εργαλεία με γενική χρήση. Στα πλαίσια αυτής της εργασίας υλοποιήθηκαν και εργαλεία τα οποία θα χρησιμοποιήσουμε αλλά δεν θα τα αναλύσουμε σε βάθος καθώς βγαίνουν εκτός του
+θέματος της επιστήμης των δεδομένων. Αναφορικά αυτά τα εργαλεία είναι:
+\begin{description}
+    \item[\en{CSV Parser}] Υλοποιήσαμε κάποιες συναρτήσεις για να μπορούμε να εισάγουμε στο πρόγραμμα μας αρχεία \en{csv (comma seperated values)} που είναι μια πολύ συχνή μορφή δεδομένων που μάλιστα μπορεί να παραχθεί και από το \en{excel}
+    \item[\en{Progress Bar}] Επειδή τα νευρωνικά δίκτυα και γενικότερα οι αλγόριθμοι μηχανικής μάθησης παίρνουν πολύ χρόνο υλοποιήσαμε μια γραμμή προόδου ώστε να μπορεί ο χρήστης ανά πάσα στιγμή να βλέπει σε ποιο στάδιο είναι το πρόγραμμα
+    του και αν αυτό τρέχει σε φυσιολογικούς χρόνους.
+    \item[\en{Tensor}] Ίσως από τις πιο σημαντικές υλοποιήσεις μας και καρδία πολλών αλγορίθμων μηχανικής μάθησης. Ο τένσορας είναι μια δομή όπως ένας πίνακας με τη διαφορά ότι μπορεί πολύ περισσότερες διαστάσεις. Στην υλοποίηση αυτή δημιουργήθηκε η δομή του τένσορα, όλες οι βασικές πράξεις και συναρτήσεις για αυτόν και επιπλέον έχει προστεθεί κώδικας για την παραλληλοποίηση του με αποτέλεσμα να είναι πολύ πιο γρήγορες οι πράξεις. Παρόλο που είναι ένα πολύ
+    σημαντικό κομμάτι για τη μηχανική μάθηση δεν θα αναλυθεί παραπάνω καθώς η δομή του είναι μεγάλη και πολύπλοκη.
+\end{description}
 
-#include <iostream>
-#include <iomanip>
-#include <fstream>
-#include <vector>
-#include <unordered_map>
+Η τελευταία υλοποίησή μας η οποία είναι η πιο σημαντική και την οποία θα αναλύσουμε στη συνέχεια είναι αυτή του νευρωνικού δικτύου. Σε αυτή την υλοποίηση δημιουργήσαμε τα βασικά επίπεδα που χρησιμοποιούνται στα νευρωνικά δίκτυα και διάφορες
+συναρτήσεις υπολογισμού κόστους για διαφορετικούς τύπους προβλήματος. Επιπλέον δημιουργήσαμε τη δομή του δικτύου το οποίο μπορεί αποτελείται αποτελείται από πολλά επίπεδα και τη δομή του μοντέλου στην οποία μπορούμε να εισάγουμε ένα δίκτυο που θα φτιάξουμε, τα δεδομένα που θα εκπαιδεύσουμε και επιπλέον μπορούμε να δηλώσουμε και τις παραμέτρους εκπαίδευσης.
+\subsection{Επίπεδα}
+Τα δύο επίπεδα που επιλέξαμε να υλοποιήσουμε είναι το \en{dense layer (fully connected)} και το \en{activation layer}. Πριν όμως υλοποιήσουμε τα επίπεδα διεπαφή (\en{interface}). Η διεπαφή αυτή είναι το επίπεδο και ο κώδικας φαίνεται
+παρακάτω.
+\begin{otherlanguage}{english}
+\begin{lstlisting}[style=cppstyle,caption=Layer Interface]
+class Layer {
+public:
+    virtual ~Layer () {}
+    virtual void forward (Tensor<double>* propagator) = 0;
+    virtual void backwards (Tensor<double>* propagator) = 0;
+    virtual void predict (Tensor<double>* propagator) = 0;
+    virtual void fix (double learning_rate) = 0;
+};
 \end{lstlisting}
 \end{otherlanguage}
-Θα χρησιμοποιήσουμε τα πρώτα δύο \textlatin{includes} για να εμφανίσουμε τα δεδομένα μορφοποιημένα στο \textlatin{command line}, ενώ τα επόμενα τρία θα τα χρειαστούμε για να εισάγουμε τα δεδομένα.
+Από τον παραπάνω κώδικά πρέπει να καταλάβουμε κάποια βασικά πράγματα. Αυτή η κλάση θα κληρονομηθεί από όλα τα επίπεδα που θα φτιάξουμε. Έχουμε ορίσει συγκεκριμένες συναρτήσεις και τις έχουμε αναθέσει σε μηδέν. Αυτό σημαίνει ότι κάθε κλάση
+που θα την κληρονομήσει επιβάλλεται να υλοποιήσει αυτές τις συναρτήσεις (αλλιώς θα υπάρχει \en{error}). Αυτό θα μας βοηθήσει στην αντιμετώπιση προβλημάτων αλλά δίνει τη δυνατότητα σε έναν χρήστη να φτιάξει τα δικά του επίπεδα και να έχουν
+απευθείας πλήρη συμβατότητα με το υπόλοιπο πρόγραμμα. Σε αυτό συμβάλει σημαντικά η λέξη \en{virtual} που βρίσκεται στην αρχή κάθε συνάρτησης αλλά θα εξηγήσουμε τη σημασία της παρακάτω.
+
+Οι συναρτήσεις των οποίων επιβάλλεται η υλοποίηση είναι:
+\begin{description}
+    \item[\en{forward}] Δέχεται έναν τένσορα σαν  είσοδο και τον επεξεργάζεται (τον μετατρέπει ουσιαστικά στην έξοδο για να μπει σαν είσοδος στο επόμενο επίπεδο). Αυτή η συνάρτηση χρησιμοποιείται κατά την εκπαίδευση δώσουμε μια είσοδο στο
+    δίκτυο μας και να υπολογίσει την έξοδο.
+    \item[\en{backwords}] Ουσιαστικά έχει ίδια χρήση με την \en{forward} αλλά ενώ η \en{forward} διαδίδει την είσοδο στην έξοδο η \en{backwords} διαδίδει το σφάλμα προς την αντίθετη κατεύθυνση (\en{Back Propagation}).
+    \item[\en{predict}] είναι ακριβώς ίδια στην υλοποίηση της με την \en{forward}, μόνο που παραλείπει κάποιες διεργασίες της που δεν είναι απαραίτητες. Χρησιμοποιείται στο στάδιο του \en{validation}.
+    \item[\en{fix}] Είναι ο τρόπος με τον οποίο μαθαίνει το επίπεδο (και κατα συνέπεια και το δίκτυο) διορθώνοντας κάποιες παραμέτρους (βάρη) του επιπέδου.
+\end{description}
+
+Έχοντας κατανοήσει τα παραπάνω μπορούμε να φτιάξουμε το πρώτο μας επίπεδο (\en{dense}):
 \begin{otherlanguage}{english}
-\begin{lstlisting}[style=cppstyle, caption = parse\_csv function]
-template <class T>
-std::unordered_map<std::string, std::vector<T>> parse_csv (
-    std::string filepath, size_t features)
-{
-    // The data will be held in an unordered map
-    std::unordered_map<std::string, std::vector<float>> data, tempData;
-    // Csv file to read from
-    std::ifstream file;
-    T temp;
-    std::string key;
-    file.open(filepath);
-    for (size_t i = 0; i < features - 1; i++) {
-        std::getline(file, key, ',');
-        tempData.insert({key, {}});
-    }
-    std::getline(file, key, '\n');
-    tempData.insert({key, {}});
-    for (const auto &pair : tempData) data.insert(pair);
-    bool eof = false;
-    while (true) {
-        for (auto &pair : data) {
-            if (file >> temp) {
-                pair.second.push_back(temp);
-                if (    file.peek() == ','  ||
-                        file.peek() == '\n' ||
-                        file.peek() == '\r') file.ignore();
-            }
-            else {
-                eof = true;
-                break;
+\begin{lstlisting}[style=cppstyle,caption= Dense layer in hpp file]
+class Dense : public Layer {
+private:
+    Tensor<double>* weights;
+    Tensor<double>* biases;
+    Tensor<double>* inputs;
+    Tensor<double>* errors;
+public:
+    Dense (size_t input_size, size_t output_size);
+    ~Dense ();
+    void forward (Tensor<double>* propagator) override;
+    void backwards (Tensor<double>* propagator) override;
+    void predict (Tensor<double>* propagator) override;
+    void fix (double learning_rate) override;
+};
+\end{lstlisting}
+\end{otherlanguage}
+Εδώ βλέπουμε τις επιπλέον παραμέτρους που χρειάζονται για αυτό το επίπεδο. Βλέπουμε τέσσερις τένσορες. Οι δύο από αυτους χρησιμοποιούνται για τον υπολογισμό της εξόδου (\en{weigts} και \en{biases}), ενώ οι άλλοι δύο χρησιμοποιούνται για
+την αποθήκευση των εισόδων και των σφαλμάτων. Μπορούμε να δούμε την υλοποίηση των συναρτήσεων παρακάτω:
+\begin{otherlanguage}{english}
+\begin{lstlisting}[style=cppstyle,caption= Dense layer in cpp file]
+Dense::Dense (size_t input_size, size_t output_size) {
+    weights = new Tensor<double>(input_size, output_size);
+    biases  = new Tensor<double>((size_t)1, output_size);
+    inputs  = new Tensor<double>;
+    errors  = new Tensor<double>;
+
+    for(size_t i = 0; i < input_size; i++) {
+            for( size_t j = 0; j < output_size; j++) {
+                (*weights)(i, j) = rand()/(double)(RAND_MAX) - 0.5;
             }
         }
-        if (eof) break;
-    }
-    file.close();
-    return data;
+        for(size_t i = 0; i < output_size; i++) {
+            (*biases)((size_t)0, i) = 0;
+        }
+}
+Dense::~Dense () {
+    delete weights;
+    delete biases;
+    delete inputs;
+    delete errors;
+}
+void Dense::forward (Tensor<double>* propagator) {
+    *inputs = *propagator;
+    *propagator = mul(*propagator, *weights) + *biases;
+}
+void Dense::backwards (Tensor<double>* propagator) {
+    *errors = *propagator;
+    *propagator = mul(*propagator, ~(*weights));
+}
+void Dense::predict (Tensor<double>* propagator) {
+    *propagator = mul(*propagator, *weights) + *biases;
+}
+void Dense::fix (double learning_rate) {
+    *weights = *weights - mul(~(*inputs), *errors)*
+        learning_rate/(double)errors->dims()[0];
+    *biases = *biases - (*errors)[0]*
+        learning_rate/(double)errors->dims()[0];
 }
 \end{lstlisting}
 \end{otherlanguage}
-\par Το \textlatin{map} είναι μια δομή δεδομένων η οποία αντιστοιχίζει έναν τύπο μεταβλητης σε μία άλλη. Στην συγκεκριμένη περίπτωση αντιστοιχίζουμε \textlatin{strings} και συγκεκριμένα τα ονόματα των χαρακτηριστικών των δεδομένων μας σε
-\textlatin{vectors} δηλαδή πίνακες. Μπορούμε να χρησιμοποιήσουμε  τώρα το \textlatin{data} για να πάρουμε όποια τιμή θέλουμε. Για παράδειγμα το \textlatin{data["glucose"]} θα μας επιστρέψει έναν πίνακα που θα περιέχει όλη την πρώτη στήλη
-από το \textlatin{diabetes.csv} και αν θέλουμε να πάρουμε ένα συγκεκριμένο στοιχείο από αυτή τη στήλη μπορούμε απλά να το πάρουμε γνωρίζοντας τη θέση του. Το \textlatin{data["glucose"][2]} θα μας επιστρέψει το τρίτο στοιχείο της στήλης.
-\par Τωρα θα ορίσουμε τη συνάρτηση που θα εμφανίζει τα αποτελέσματα στην οθόνη.
-\begin{otherlanguage}{english}
-\begin{lstlisting}[style=cppstyle, caption = print\_map function]
-template <class T>
-void print_map (
-    const std::unordered_map<std::string,std::vector<T>>& data)
-{
-    size_t size;
-    for (const auto &pair : data) {
-        std::cout << pair.first << '\t';
-        size = pair.second.size();
-    }
-    std::cout << '\n';
-    for (size_t i = 0; i < size; i++) {
-        for (const auto &pair : data)
-            std::cout   << std::setw(pair.first.size())
-                        << std::left
-                        << pair.second[i]
-                        << '\t';
-        std::cout << '\n';
-    }
-}
-\end{lstlisting}
-\end{otherlanguage}
-Για το παράδειγμά μας θα πάρουμε την εξής έξοδο:
-\begin{otherlanguage}{english}
-\begin{lstlisting}[style=csvstyle, caption = output for diabetes.csv]
-glucose bloodpressure   diabetes
-40      85              0
-40      92              0
-45      63              1
-45      80              0
-40      73              1
-45      82              0
-40      85              0
-30      63              1
-65      65              1
-45      82              0
-\end{lstlisting}
-\end{otherlanguage}
-%include dont forget
+Οι συναρτήσεις είναι οι εξής:
+\begin{description}
+    \item[\en{Desne (constructor)}] Δημιουργεί και αρχικοποιεί το επίπεδο. Συγκεκριμένα δέχεται το μέγεθος εισόδου και εξόδου και αρχικοποιεί με τα ανάλογα μεγέθη τους τους τένσορες για τα \en{weights} (αρχικοποιούνται τα στοιχεία του με
+    τυχαίους αριθμους από -0.5 ως 0.5 )  και \en{biases} (αρχικοποιούνται σε μηδέν).
+    \item[\en{\~\ Desne (destructor)}] Απελευθερώνει τη μνήμη που δέσμευαν οι τένσορες.
+    \item[\en{forward}] Αρχικά σώσει την είσοδο (θα χρειαστεί σε επόμενο στάδιο). Έπειτα κάνει πολλαπλασιασμό πινάκων μεταξύ εισόδου και βαρών και μετά προσθέτει στο αποτέλεσμα τα \en{biases}.
+    \item[\en{backwards}] Αρχικά σώζει το σφάλμα και έπειτα υπολογίζει το σφάλμα του προηγούμενου επιπέδου. Για να το κάνει αυτό εκτελεί πολλαπλασιασμό πινάκων μεταξύ των σφαλμάτων του και τον \textbf{αντίστροφο} των βαρών.
+    \item[\en{predict}] Κάνει την ίδια δουλειά με το \en{forward} αλλά δεν χρειάζεται να αποθηκεύσει την είσοδο.
+    \item[\en{fix}] Διορθώνει τα βάρη και τα \en{biases} με τον τρόπο που έχουμε ήδη δει.
+\end{description}
