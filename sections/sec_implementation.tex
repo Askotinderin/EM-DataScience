@@ -114,3 +114,203 @@ void Dense::fix (double learning_rate) {
     \item[\en{predict}] Κάνει την ίδια δουλειά με το \en{forward} αλλά δεν χρειάζεται να αποθηκεύσει την είσοδο.
     \item[\en{fix}] Διορθώνει τα βάρη και τα \en{biases} με τον τρόπο που έχουμε ήδη δει.
 \end{description}
+
+Τώρα θα υλοποιήσουμε το \en{activation layer}.
+\begin{otherlanguage}{english}
+\begin{lstlisting}[style=cppstyle,caption= Activation layer in hpp file]
+class Activation : public Layer {
+private:
+    Tensor<double>* inputs;
+    std::function<void(Tensor<double>*)> func;
+    std::function<void(Tensor<double>*)> der;
+public:
+    Activation (    size_t input_size,
+                    std::function<void(Tensor<double>*)> func,
+                    std::function<void(Tensor<double>*)> der);
+    ~Activation ();
+    void forward (Tensor<double>* propagator) override;
+    void backwards (Tensor<double>* propagator) override;
+    void predict (Tensor<double>* propagator) override;
+    void fix (double learning_rate) override;
+};
+\end{lstlisting}
+\end{otherlanguage}
+Παρατηρούμε ότι αυτό το επίπεδο δεν έχει βάρη αλλά έχει δύο συναρτήσεις τις οποίες μπορούμε να δηλώσουμε εμείς κατα τη δημιουργία αυτού του επιπέδου. Συγκεκριμένα αρχικοποιούμε ένα τέτοιο επίπεδο δίνοντας το μέγεθος εισόδου, μια συνάρτηση
+ενεργοποίησης και την παράγωγό της. Αυτή η υλοποίηση επιτρέπει σε οποιονδήποτε χρήστη να φτιάξει τις δικές του συναρτήσεις ενεργοποίησης και να μπορεί να τις χρησιμοποιήσει απευθείας σε συνδυασμό με τη βιβλιοθήκη μας. Η υλοποίηση των
+συναρτήσεων για αυτό το επίπεδο είναι πολύ  πιο απλές.
+\begin{otherlanguage}{english}
+\begin{lstlisting}[style=cppstyle,caption= Activation layer in cpp file]
+Activation::Activation (    size_t input_size,
+                            std::function<void(Tensor<double>*)> func,
+                            std::function<void(Tensor<double>*)> der) {
+    inputs  = new Tensor<double>;
+    this->func = func;
+    this->der = der;
+}
+Activation::~Activation () {
+    func = nullptr;
+    der = nullptr;
+    delete inputs;
+}
+void Activation::forward (Tensor<double>* propagator) {
+    *inputs = *propagator;
+    func(propagator);
+}
+void Activation::backwards (Tensor<double>* propagator) {
+    der(inputs);
+    *propagator = (*propagator) * (*inputs);
+}
+void Activation::predict (Tensor<double>* propagator) {
+    func(propagator);
+}
+void Activation::fix (double learning_rate) {
+
+}
+\end{lstlisting}
+\end{otherlanguage}
+Όπως φαίνεται και παραπάνω η συνάρτηση \en{forward} αποθηκεύει την είσοδο και εφαρμόζει τη συνάρτηση ενεργοποίησης στην είσοδο, ενώ η συνάρτηση \en{backwards} πολλαπλασιάζει το σφάλμα με την παράγωγο την αποθηκευμένης εισόδου. Τα επίπεδα
+ενεργοποίησης δεν μαθαίνουν κάτι αφού δεν έχουν βάρη άρα μπορούμε να αφήσουμε τη συνάρτηση κενή (αλλά πρέπει να την υλοποιήσουμε). Έχουμε επίσης υλοποιήσει τις πιο γνωστές συναρτήσεις ενεργοποίησης οι οποίες είναι:
+\begin{enumerate}
+    \item \en{sigmoid}
+    \item \en{tanh}
+    \item \en{relU}
+    \item \en{linear}
+    \item \en{softmax}
+\end{enumerate}
+\begin{otherlanguage}{english}
+\begin{lstlisting}[style=cppstyle,caption= Activation functions]
+void act::sigmoid (Tensor<double>* t) {
+    *t = 1/(1 + exp(-(*t)));
+}
+void act::tanh (Tensor<double>* t) {
+    *t = tanh(*t);
+}
+void act::relu (Tensor<double>* t) {
+    *t = max(*t, 0);
+}
+void act::softmax (Tensor<double>* t) {
+    Tensor<double> sums = exp(*t)[1];
+    *t = exp(*t)/sums;
+}
+void act::linear (Tensor<double>* t) {
+
+}
+void der::sigmoid (Tensor<double>* t) {
+    *t = exp(-(*t))/((1 + exp(-(*t)))*(1 + exp(-(*t))));
+}
+void der::tanh (Tensor<double>* t) {
+    *t = 1 - tanh(*t)*tanh(*t);
+}
+void der::relu (Tensor<double>* t) {
+    *t = (*t > 0);
+}
+void der::softmax (Tensor<double>* t) {
+
+}
+void der::linear (Tensor<double>* t) {
+
+}
+\end{lstlisting}
+\end{otherlanguage}
+Εδώ παρατηρούμε ότι οι παράγωγοι για των \en{linear} και \en{softmax} δεν έχουν υλοποιηθεί αλλά αυτό δεν μας επηρεάζει διότι αυτές οι ενεργοποιήσεις βρίσκονται μόνο στο επίπεδο εξόδου και αν κάνουμε καποιες μαθηματικές απλοποιήσεις
+προκύπτει ότι δεν είναι απαραίτητη η οπισθοδρόμηση από αυτό το επίπεδο αλλά μπορούμε να περάσουμε απευθείας στο προηγούμενο.
+
+\subsection{Δίκτυο}
+Έχουμε λοιπόν υλοποιήσει τα δύο απαραίτητα επίπεδα για κάθε νευρωνικό δίκτυο μπορούμε να υλοποιήσουμε την κλάση του δικτύου.
+\begin{otherlanguage}{english}
+\begin{lstlisting}[style=cppstyle,caption= Network layer in hpp file]
+class Network : public Layer {
+private:
+    std::vector<Layer*> layers;
+public:
+    Network ();
+    ~Network ();
+    void add (Layer* l);
+    void forward (Tensor<double>* propagator) override;
+    void backwards (Tensor<double>* propagator) override;
+    void predict (Tensor<double>* propagator) override;
+    void fix (double learning_rate) override;
+};
+\end{lstlisting}
+\end{otherlanguage}
+Βλέπουμε ότι το δίκτυο περιέχει μία λίστα από επίπεδα. Επιπλέον έχει όλες τις συναρτήσεις που είχαν και τα επίπεδα. Στη συνάρτηση \en{forward} διατρέχουμε για κάθε επίπεδο με τη σειρά και εκτελούμε τη συνάρτηση \en{forward} ενώ στη συνάρτηση
+όπως κάνουμε και στις \en{predict} και \en{fix} ενώ στην \en{backwards} διατρέχουμε τα επίπεδα με την ανάποδη σειρά. Επιπλέον έχουμε και μια συνάρτηση για προσθέτουμε επίπεδα στο δίκτυο μας. Η υλοποίηση φαίνεται παρακάτω.
+\begin{otherlanguage}{english}
+\begin{lstlisting}[style=cppstyle,caption= Network layer in cpp file]
+Network::Network () {
+    layers = std::vector<Layer*>{};
+}
+Network::~Network () {
+    for (auto layer : layers) delete layer;
+    }
+void Network::add (Layer* l) {
+    layers.push_back(l);
+}
+void Network::forward (Tensor<double>* propagator) {
+    for (auto layer : layers) layer->forward(propagator);
+}
+void Network::backwards (Tensor<double>* propagator) {
+    for(size_t i = 1; i < layers.size(); i++)
+        layers[layers.size() - i - 1]->backwards(propagator);
+}
+void Network::predict (Tensor<double>* propagator) {
+    for (auto layer : layers) layer->predict(propagator);
+}
+void Network::fix (double learning_rate) {
+    for (auto layer : layers) layer->fix(learning_rate);
+}
+\end{lstlisting}
+\end{otherlanguage}
+Έδω είναι σημαντικό να εξηγήσουμε τη λέξη \en{virtual} που χρησιμοποιήσαμε στη διεπαφή μας. Στην υλοποίηση του δικτύου μας έχουμε λίστα από επίπεδα. Επειδή όμως δεν η λίστα δεν περιέχει τα επίπεδα αλλά τους δείκτες σε αυτά μπορούμε να
+αρχικοποιήσουμε ένα επίπεδο (που είναι μια αδεια κλάση) με τον \en{constructor} της κλάσης \en{Dense} γράφοντας \en{\lstinline[style=cppstyle]{Layer* l = new Dense(10, 5);}}. Το ερώτημα είναι όταν καλέσουμε τη συνάρτηση
+\en{\lstinline[style=cppstyle]{l.forward(some tensor);}} θα καλέσουμε τη συνάρτηση \en{forward} της κλάσης \en{Layer} ή της \en{Dense}? Επειδή λοιπόν έχουμε προσθέσει τη λέξη \en{virtual} μπροστά από τις συναρτήσεις της διεπαφής θα
+κληθεί η συνάρτηση του \en{Dense} ενώ διαφορετικά θα γινόταν το ανάποδο. Αυτό μας δίνει μεγάλη ευκολία στο να προσθέσουμε διαφορετικά επίπεδα στο δίκτυο με την ίδια συνάρτηση και να τα έχουμε όλα σε μία λίστα. Επιπλέον ένας χρήστης όπως
+αναφέραμε μπορεί να φτιάξει δικά του επίπεδα και να τα χρησιμοποιήσει με απόλυτη συμβατότητα αρκεί να κληρονομούν την κλάση \en{Layer}.
+
+\subsection{Μοντέλο}
+Η τελευταία κλάση που θα δούμε είναι η κλάση \en{model}. Αυτή η κλάση περιέχει ένα δίκτυο και έχει μια συνάρτηση για να το εκπαιδεύει. Επιπλέον αυτή η κλάση κρατάει και τις παραμέτρους εκπαίδευσης του δικτύου που είναι:
+\begin{description}
+    \item[\en{batch\_size}] Πόσα δεδομένα στέλνουμε μαζί (\en{batch}) σε ένα \en{iteration} (δηλαδή πριν κάνουμε διόρθωση βαρών)
+    \item[\en{iterations}] Πόσα \en{batches} δεδομένων θα στείλουμε σε ένα \en{epoch} (δηλαδή πριν κάνουμε \en{validation})
+    \item[\en{epochs}] Πόσα \en{epochs} θα διαρκέσει η εκπαίδευση
+    \item[\en{learning\_rate}] Πόσο γρήγορα μαθαίνει το δίκτυο
+    \item[\en{validation\_split}] Το ποσοστό των δεδομένων που θα χρησιμοποιηθούν για εκπαίδευση (Τα υπόλοιπα πάνε στο \en{validation})
+\end{description}
+
+Επειδή η συνάρτηση που εκπαιδεύει το δίκτυο είναι πολύ μεγάλη δεν θα δείξουμε τον κώδικα αλλά οι παράμετροι εξηγούν τη λειτουργία αρκετά καλά και το μόνο που έχουμε να κάνουμε είναι να χρησιμοποιήσουμε επαναληπτικά, με βάση αυτές τις παραμέτρους, τις συναρτήσεις του δικτύου (\en{forward, backwards, predict, fix}).
+
+Εδώ είναι επίσης το σημείο που πρέπει να φτιάξουμε τις συναρτήσεις που υπολογίζουν το σφάλμα για κάθε περίπτωση προβλήματος. Οι περιπτώσεις προβλήματος είναι:
+\begin{enumerate}
+    \item Παλινδρόμηση (\en{regression})
+    \item Δυαδική ταξινόμηση (\en{binary classification})
+    \item Κατηγορηματική ταξινόμηση (\en{categorical classification})
+    \item Πολυταξική ταξινόμηση (\en{multy class classification})
+\end{enumerate}
+\begin{otherlanguage}{english}
+\begin{lstlisting}[style=cppstyle,caption= Network layer in cpp file]
+double err::regression (Tensor<double>* p, const Tensor<double>& e) {
+    *p = *p - e;
+    double cost = (abs(*p)[0][1]/(double)(p->dims()[0])).vec()[0];
+    return cost;
+}
+double err::binary (Tensor<double>* p, const Tensor<double>& e) {
+    Tensor<double> loss = -(e*log(*p) + ((double)1 - e)*log((double)1 - *p));
+    *p = *p - e;
+    double cost = (loss[0]/(double)(loss.dims()[0])).vec()[0];
+    return cost;
+}
+double err::categorical (Tensor<double>* p, const Tensor<double>& e) {
+    Tensor<double> loss = (-e*log(*p))[1];
+    *p = *p - e;
+    double cost = (loss[0]/(double)(loss.dims()[0])).vec()[0];
+    return cost;
+}
+double err::multyclass (Tensor<double>* p, const Tensor<double>& e) {
+    Tensor<double> loss = (-(e*log(*p) + ((double)1 - e)*log((double)1 - *p)))[1];
+    *p = *p - e;
+    double cost = (loss[0]/(double)(loss.dims()[0])).vec()[0];
+    return cost;
+}
+\end{lstlisting}
+\end{otherlanguage}
+Έτσι μπορούμε να υπολογίσουμε το σφάλμα για κάθε είδος προβλήματος. Αυτές ήταν οι πιο σημαντικές υλοποιήσεις που έγιναν στα πλαίσια αυτής της εργασίας.
