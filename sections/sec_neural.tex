@@ -55,63 +55,147 @@ $$y=w_5\times f_A(h_1)+w_6\times f_A(h_2)$$
 Όπου $f_A$ η συνάρτηση ενεργοποίησης. Παρατηρούμε ότι η είσοδος δεν μπορεί πλέον να συνδεθεί γραμμικά με την έξοδο και άρα έχουμε πετύχει τον στόχο μας.
 
 Υπάρχουν πολλές συναρτήσεις ενεργοποίησης και όλες έχουν τα πλεονεκτήματα και τα μειονεκτήματα τους. Εμεις θα αναλύσουμε κάποιες από τις πιο γνωστές οι οποίες χρησιμοποιούνται σχεδόν πάντα στα νευρωνικά δίκτυα.
+Από τις πρώτες συναρτήσεις ενεργοποίησης ήταν η βηματική συνάρτηση:
+\[f(x)=\left\{\begin{array}{ll}0 & x<0 \\ 1 & x>=0 \\ \end{array} \right.\]
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, xmin = -5, xmax=5, ymin=0, ymax=2, xtick={-5,-4,...,5}, ytick={0,1,2}]
+        \addplot[color=red, domain=0:10]{1};
+        \addplot[color=red, domain=-10:0]{0};
+    \end{axis}
+    \end{tikzpicture}
+    \caption{\en{step function}}
+\end{figure}
+Η βηματική συνάρτηση είναι χρήσιμη όταν έχουμε ένα πρόβλημα δυαδικής ταξινόμησης. Μπορούμε δηλαδή να την εφαρμόσουμε στο επίπεδο εξόδου έτσι ώστε η απάντηση που θα παίρνουμε να είναι πάντα  0 ή 1. Όμως έχει ένα μεγάλο μειονέκτημά το οποίο
+είναι ότι δεν είναι συνεχής. Η τεχνική της Οπισθοδρόμησης βασίζεται στις παραγώγους των συναρτήσεων κάτι το οποίο την κάνει πολύ δύσχρηστη. Θα μπορούσαμε θεωρητικά να αγνοήσουμε το 0 στο οποίο η συνάρτηση δεν είναι παραγωγίσιμη και να του
+δώσουμε μια τιμή (όπως 0) αλλά υπάρχει ένα ακόμα πρόβλημα. Το πρόβλημα είναι ότι η παράγωγός της είναι παντού 0 και γνωρίζουμε από την οπισθοδρόμηση ότι πρέπει να πολλαπλασιάσουμε το σφάλμα με αυτή την παράγωγο. Άρα τελικά το σφάλμα που θα διαδίδεται στα επίπεδα θα είναι μηδενικό και άρα δεν θα γίνεται καμία διόρθωση.
 
-\begin{tikzpicture}
-\begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, title=\en{step function}, xmin = -5, xmax=5, ymin=0, ymax=2, xtick={-5,-4,...,5}, ytick={0,1,2}]
-    \addplot[color=red, domain=0:10]{1};
-    \addplot[color=red, domain=-10:0]{0};
-\end{axis}
-\end{tikzpicture}
+Μια καλύτερη συνάρτηση που διατηρεί τα χαρακτηριστικά της βηματικής είναι η σιγμοειδής:
+$$f(x)=\frac{1}{1+e^{-x}}$$
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, xmin = -5, xmax=5, ymin=0, ymax=2, xtick={-5,-4,...,5}, ytick={0,1,2}]
+        \addplot[color=red]{exp(x)/(exp(x)+1)};
+    \end{axis}
+    \end{tikzpicture}
+    \caption{\en{sigmoid function}}
+\end{figure}
+Αυτή η συνάρτηση είναι επίσης φραγμένη από το 0 ως το 1 και για αυτό μπορεί να χρησιμοποιηθεί επίσης στο επίπεδο εξόδου για δυαδική ταξινόμηση. Η σιγμοειδής όμως έχει ποιο ομαλή και συνεχή μετάβαση από το 0 στο 1 άρα μπορούμε να εφαρμόσουμε
+τους κανόνες της οπισθοδρόμησης. Χρησιμοποιείται λοιπόν με αυτόν τον τρόπο μέχρι και σήμερα. Παρ' όλα αυτά για τα κρυφά επίπεδα, τα οποία δεν είναι απαραίτητο να κυμαίνονται απο 0 μέχρι 1, υπάρχει μια ακόμα καλύτερη συνάρτηση. Αυτή είναι η
+συνάρτηση της υπερβολικής εφαπτομένης:
+$$f(x)=\tanh (x)=\frac{e^x-e^{-x}}{e^x+e^{-x}}$$
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, xmin = -5, xmax=5, ymin=-2, ymax=2, xtick={-5,-4,...,5}, ytick={-2,-1,...,2}]
+        \addplot[color=red]{tanh(x)};
+    \end{axis}
+    \end{tikzpicture}
+    \caption{\en{tanh function}}
+\end{figure}
+Η συνάρτηση αυτή είναι καλύτερη επειδή αντιμετωπίζει το λεγόμενο \en{vanishing gradient problem}. Για να καταλάβουμε τι σημαίνει αυτό θα πρέπει να συγκρίνουμε τις παραγώγους των δύο συναρτήσεων:
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+        \begin{tikzpicture}
+        \begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, xmin = -5, xmax=5, ymin=0, ymax=1, xtick={-5,-4,...,5}, ytick={0,0.25,...,1}]
+            \addplot[color=red]{(exp(x)/(exp(x)+1))*(1-(exp(x)/(exp(x)+1)))};
+        \end{axis}
+        \end{tikzpicture}
+        \caption{\en{sigmoid derivative}}
+    \end{subfigure}
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+        \begin{tikzpicture}
+        \begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, xmin = -5, xmax=5, ymin=0, ymax=1, xtick={-5,-4,...,5}, ytick={0,0.25,...,1}]
+            \addplot[color=red]{1-tanh(x)^2};
+        \end{axis}
+        \end{tikzpicture}
+        \caption{\en{tanh derivative}}
+    \end{subfigure}
+    \caption{\en{derivative comparison}}
+\end{figure}
+Από το παραπάνω σχήμα μπορούμε να δούμε ότι η παράγωγός της σιγμοειδούς έχει μέγιστη τιμή το 0.25. Αυτό σημαίνει ότι αν έχουμε πολλά κρυφά επίπεδα με αυτή την ενεργοποίηση, κάθε φορά που το σφάλμα θα διαδίδεται από το ένα επίπεδο στο άλλο
+θα υπο-τετραπλασιάζεται στην καλύτερη περίπτωση. Έτσι στο τέλος τα αρχικά επίπεδα θα κάνουν ελάχιστη διόρθωση στα βάρη τους. Αντιθέτως η παράγωγος της υπερβολικής εφαπτομένης έχει μέγιστο το 1 άρα δίνει πολύ καλύτερα αποτελέσματα. Παρ' ότι
+μειώνεται το πρόβλημα όμως δεν εξαφανίζεται. Γι' αυτό οι επόμενες συναρτήσεις που θα δούμε αντιμετωπίζουν πλήρως το \en{vanishing gradient problem}.
 
-\begin{tikzpicture}
-\begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, title=\en{ReLU function}, xmin = -5, xmax=5, ymin=0, ymax=5, xtick={-5,-4,...,5}, ytick={0,1,...,5}, axis equal]
-    \addplot[color=red, domain=0:10]{x};
-    \addplot[color=red, domain=-10:0]{0};
-\end{axis}
-\end{tikzpicture}
-
-\begin{tikzpicture}
-    \begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, title=\en{leaky ReLU function}, xmin = -5, xmax=5, ymin=0, ymax=5, xtick={-5,-4,...,5}, ytick={0,1,...,5}, axis equal]
+Η επόμενη συνάρτηση που αυτή τη στιγμή είναι και η πιο διάσημη συνάρτηση ενεργοποίησης στη μηχανική μάθηση είναι η \en{ReLU (rectified linear unit)}:
+\[f(x)=\left\{\begin{array}{ll}0 & x<0 \\ x & x>=0 \\ \end{array} \right.\]
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, xmin = -5, xmax=5, ymin=0, ymax=5, xtick={-5,-4,...,5}, ytick={0,1,...,5}, axis equal]
+        \addplot[color=red, domain=0:10]{x};
+        \addplot[color=red, domain=-10:0]{0};
+    \end{axis}
+    \end{tikzpicture}
+    \caption{\en{ReLU function}}
+\end{figure}
+Η συνάρτηση αυτή έχει την ικανότητα να προσφέρει ταυτόχρονα τα πλεονεκτήματα της γραμμικότητας αλλά και της μη γραμμικότητας. Λόγω της γραμμικότητας δεν έχει το \en{vanishing gradient problem} και επίσης έχει πολύ απλή υλοποίηση. Αλλά η μη
+γραμμικότητα που έχει της επιτρέπει να εφαρμόζει την επιθυμητή μη γραμμικότητα που θέλουμε στα νευρωνικά δίκτυα. Ενώ η συνάρτηση είναι η πιο διάσημη δεν σημαίνει ότι δεν έχει και αυτή τα προβλήματά της. Συγκεκριμένα μιλάμε για το λεγόμενο
+\en{dying ReLU problem}. Συγκεκριμένα η παράγωγός της για αρνητικές τιμές είναι 0. Αυτό σημαίνει ότι όταν είναι αρνητική η είσοδος δεν θα μπορεί να διαδοθεί το σφάλμα από εκείνο το επίπεδο. Γι' αυτό και οι επόμενες συναρτήσεις που θα δούμε
+είναι παραλλαγές αυτής της συνάρτησης με σκοπό να αντιμετωπίσουν αυτό το πρόβλημα. Ξεκινάμε με την \en{Leaky ReLU}:
+\[f(x)=\left\{\begin{array}{ll}0.01x & x<0 \\ x & x>=0 \\ \end{array} \right.\]
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, xmin = -5, xmax=5, ymin=0, ymax=5, xtick={-5,-4,...,5}, ytick={0,1,...,5}, axis equal]
         \addplot[color=red, domain=0:10]{x};
         \addplot[color=red, domain=-10:0]{0.1*x};
-\end{axis}
-\end{tikzpicture}
-
-\begin{tikzpicture}
-    \begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, title=\en{ELU function}, xmin = -5, xmax=5, ymin=0, ymax=5, xtick={-5,-4,...,5}, ytick={0,1,...,5}, axis equal]
+    \end{axis}
+    \end{tikzpicture}
+    \caption{\en{ReLU function}}
+\end{figure}
+Γενίκευση της αποτελει τη \en{parametric ReLU} με τύπο:
+\[f(x)=\left\{\begin{array}{ll}ax & x<0 \\ x & x>=0 \\ \end{array} \right.\]
+Αυτές αντιμετωπίζουν το πρόβλημα με έναν πολύ απλό τρόπο. Παρ' όλα αυτά έχουν βρεθεί και πιο πολύπλοκες συναρτήσεις που θα δούμε παρακάτω. Ακολουθεί η συνάρτηση \en{ELU (exponential linear unit)}:
+\[f(x)=\left\{\begin{array}{ll}a(e^x-1) & x<0 \\ x & x>=0 \\ \end{array} \right.\]
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, xmin = -5, xmax=5, ymin=0, ymax=5, xtick={-5,-4,...,5}, ytick={0,1,...,5}, axis equal]
         \addplot[color=red, domain=0:10]{x};
         \addplot[color=red, domain=-10:0]{(exp(x)-1)};
-\end{axis}
-\end{tikzpicture}
-
-\begin{tikzpicture}
-    \begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, title=\en{SELU function}, xmin = -5, xmax=5, ymin=-5, ymax=5, xtick={-5,-4,...,5}, ytick={0,1,...,5}, axis equal]
+    \end{axis}
+    \end{tikzpicture}
+    \caption{\en{ELU function}}
+\end{figure}
+Όπως και πριν μπορούμε να γενικεύσουμε αυτή τη συνάρτηση. Η γενικευμένη μορφή ονομάζεται \en{SELU (scaled exponential linear unit)}:
+\[f(x)=\lambda\left\{\begin{array}{ll}a(e^x-1) & x<0 \\ x & x>=0 \\ \end{array} \right.\]
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, xmin = -5, xmax=5, ymin=-5, ymax=5, xtick={-5,-4,...,5}, ytick={0,1,...,5}, axis equal]
         \addplot[color=red, domain=0:10]{x};
         \addplot[color=red, domain=-10:0]{2*(exp(x)-1)};
-\end{axis}
-\end{tikzpicture}
-
-\begin{tikzpicture}
-    \begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, title=\en{GELU function}, xmin = -5, xmax=5, ymin=0, ymax=5, xtick={-5,-4,...,5}, ytick={0,1,...,5}, axis equal]
+    \end{axis}
+    \end{tikzpicture}
+    \caption{\en{SELU function}}
+\end{figure}
+Οι παραπάνω συναρτήσεις όπως έχουμε δει έχουν δύο κλάδους με σκοπό να πετύχουν τη γραμμικά και μη γραμμικά στοιχεία που θέλουμε. Οι παρακάτω συναρτήσεις καταφέρνουν να έχουν παρόμοια συμπεριφορά με έναν τύπο συνάρτησης. Η μία από αυτές
+είναι η \en{GELU (Gaussian error linear unit)}:
+$$0.5x\left(1+\tanh \left[\frac{\sqrt{2}}{\pi}(x+0.044715x^3)\right]\right)$$
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, xmin = -5, xmax=5, ymin=0, ymax=5, xtick={-5,-4,...,5}, ytick={0,1,...,5}, axis equal]
         \addplot[color=red]{0.5*x*(1+tanh(sqrt(2)/pi*(x+0.044715*x^3)))};
-\end{axis}
-\end{tikzpicture}
+    \end{axis}
+    \end{tikzpicture}
+    \caption{\en{GELU function}}
+\end{figure}
+
+
+
 
 \begin{tikzpicture}
-\begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, title=\en{sigmoid function}, xmin = -5, xmax=5, ymin=0, ymax=2, xtick={-5,-4,...,5}, ytick={0,1,2}]
-    \addplot[color=red]{exp(x)/(exp(x)+1)};
-\end{axis}
-\end{tikzpicture}
-
-\begin{tikzpicture}
-\begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, title=\en{swish function}, xmin = -5, xmax=5, ymin=-2, ymax=2, xtick={-5,-4,...,5}, ytick={0,1,2}]
+\begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, title=\en{swish function}, xmin = -5, xmax=5, ymin=-2, ymax=2, xtick={-5,-4,...,5}, ytick={0,1,2}, axis equal]
     \addplot[color=red]{x/(exp(-x)+1)};
 \end{axis}
 \end{tikzpicture}
 
-\begin{tikzpicture}
-    \begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, title=\en{tanh function}, xmin = -5, xmax=5, ymin=-2, ymax=2, xtick={-5,-4,...,5}, ytick={-2,-1,...,2}]
-        \addplot[color=red]{tanh(x)};
-    \end{axis}
-    \end{tikzpicture}
+
 \subsection{Συναρτήσεις σφάλματος}
