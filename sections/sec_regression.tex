@@ -197,28 +197,30 @@ $$y_i=a_0+a_1x_i+a_2x_i^2+\cdots +a_nx_i^n+\epsilon$$
 Ο τρόπος υπολογισμού των συντελεστών γίνεται με χρήση πινάκων, για αυτό και θα πρέπει
 να αναπαραστήσουμε την πολυωνυμική παλινδρόμηση σε μορφή πινάκων ως εξής:
 $$
-A_k=f\left(
+A_k=f_A\left(
 \begin{bmatrix}
-    W_{11}     & \dots     & W_{1n}[k-1] \\
+    W_{11}     & \dots     & W_{1n^{[k-1]}} \\
     \vdots     & \ddots    & \vdots \\
-    W_n[k]_1   & \dots     & W_n[k]_n[k-1]
+    W_{n^{[k]}1}   & \dots     & W_{n^{[k]}n^{[k-1]}}
 \end{bmatrix}
 ^{[k]}
 \times
 \begin{bmatrix}
     a_1 \\
     \vdots \\
-    a_n[k-1]
+    a_{n^{[k-1]}}
 \end{bmatrix}
 ^{[k]}
-+b_1
++
+b_1
 \right)
 =
 \begin{bmatrix}
     a_1 \\
     \vdots \\
-    a_n[k]
+    a_{n^{[k]}}
 \end{bmatrix}
+^{[k]}
 $$
 Όπου απλοποιείται σε:
 $$\overrightarrow{y}=X\overrightarrow{a}+\overrightarrow{\epsilon}$$
