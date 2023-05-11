@@ -71,9 +71,51 @@ $$a=f(S_{in})$$
 με κάποια κριτήρια μπορεί να τερματίσουμε την εκπαίδευση πρόωρα για να διασφαλίσουμε
 την ακρίβεια των προβλέψεων που κάνουμε.
 \subsection{Διάδοση προς τα εμπρός}
-Έχοντας λοιπόν το απλό νευρωνικό δίκτυο με 1 input, 1 hidden και 1 output layer, όπου όλα
+Έχοντας λοιπόν το απλό νευρωνικό δίκτυο με 1 \en{input}, 1 \en{hidden} και 1 \en{output layer}, όπου όλα
 μεταξύ τους είναι fully connected, θα αναλύσουμε τον τρόπο με τον οποίο διαδίδεται η
 πληροφορία από τα πίσω προς τα μπροστά επίπεδα, δηλαδή από την είσοδο προς την έξοδο.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        neuron1/.style={circle, draw=red!60, fill=red!5, very thick, minimum size=5mm},
+        neuron2/.style={circle, draw=blue!60, fill=blue!5, very thick, minimum size=5mm},
+        neuron3/.style={circle, draw=green!60, fill=green!5, very thick, minimum size=5mm}
+        ]
+        \node[neuron1] (a10) {$a_1^{[0]}$};
+        \node[neuron1, below = 1cm of a10] (a20) {$a_2^{[0]}$};
+        \node[neuron1, below = 1cm of a20] (a30) {$a_3^{[0]}$};
+
+        \node[neuron2, above right = 0.5cm and 5cm of a10] (a11) {$a_1^{[1]}$};
+        \node[neuron2, above right = 0.5cm and 5cm of a20] (a21) {$a_2^{[1]}$};
+        \node[neuron2, below right = 0.5cm and 5cm of a20] (a31) {$a_3^{[1]}$};
+        \node[neuron2, below right = 0.5cm and 5cm of a30] (a41) {$a_4^{[1]}$};
+
+        \node[neuron3, right = 0.5cm and 11cm of a20] (a12) {$a_1^{[2]}$};
+
+        \draw[-to] (a10.east) to node[above, pos=0.8] {$w_{11}^{[1]}$} (a11.west);
+        \draw[-to] (a20.east) to node[above, pos=0.7] {$w_{12}^{[1]}$} (a11.west);
+        \draw[-to] (a30.east) to node[below, pos=0.95] {$w_{13}^{[1]}$} (a11.west);
+
+        \draw[-to] (a10.east) to node[above, pos=0.9] {$w_{21}^{[1]}$} (a21.west);
+        \draw[-to] (a20.east) to node[above, pos=0.7] {$w_{22}^{[1]}$} (a21.west);
+        \draw[-to] (a30.east) to node[below, pos=0.9] {$w_{23}^{[1]}$} (a21.west);
+
+        \draw[-to] (a10.east) to node[above, pos=0.9] {$w_{31}^{[1]}$} (a31.west);
+        \draw[-to] (a20.east) to node[above, pos=0.7] {$w_{32}^{[1]}$} (a31.west);
+        \draw[-to] (a30.east) to node[below, pos=0.9] {$w_{33}^{[1]}$} (a31.west);
+
+        \draw[-to] (a10.east) to node[above, pos=0.95] {$w_{41}^{[1]}$} (a41.west);
+        \draw[-to] (a20.east) to node[above, pos=0.7] {$w_{42}^{[1]}$} (a41.west);
+        \draw[-to] (a30.east) to node[below, pos=0.8] {$w_{43}^{[1]}$} (a41.west);
+
+        \draw[-to] (a11.east) to node[above] {$w_{11}^{[2]}$} (a12.west);
+        \draw[-to] (a21.east) to node[above] {$w_{12}^{[2]}$} (a12.west);
+        \draw[-to] (a31.east) to node[above] {$w_{13}^{[2]}$} (a12.west);
+        \draw[-to] (a41.east) to node[above] {$w_{14}^{[2]}$} (a12.west);
+    \end{tikzpicture}
+    \caption{Παράδειγμα νευρωνικου δικτύου}
+\end{figure}
 
 Για να ξεκινήσουμε θα αριθμήσουμε όλους τους νευρώνες του δικτύου. Οι εκθέτες δείχνουν
 το επίπεδο που είμαστε με τα \en{input} να είναι το επίπεδο 0. Οι δείκτες δίνουν τον αριθμό του
@@ -81,10 +123,14 @@ $$a=f(S_{in})$$
 εφόσον στο πρώτο δεν γίνεται κάποια διαδικασία υπολογισμού. Για τον νευρώνα $a_1^{[1]}$
 η τιμή του υπολογίζεται περνώντας το σταθμισμένο άθροισμα όλων των εισόδων του από
 την συνάρτηση ενεργοποίησης ως εξής:
-$$a_1^{[1]}=f_A\left(\sum\limits_{i=1}^3\left[ w_{1i}^{[1]}\times a_i^{[0]}\right]+b_1\right)=f_A\left( w_{11}^{[1]}\times a_1^{[0]}+w_{12}^{[1]}\times a_2^{[0]}+w_{13}^{[1]}\times a_3^{[0]}+b_1\right)$$
+\begin{changemargin}{-1cm}{-1cm}
+    $$a_1^{[1]}=f_A\left(\sum\limits_{i=1}^3\left[ w_{1i}^{[1]}\times a_i^{[0]}\right]+b_1\right)=f_A\left( w_{11}^{[1]}\times a_1^{[0]}+w_{12}^{[1]}\times a_2^{[0]}+w_{13}^{[1]}\times a_3^{[0]}+b_1\right)$$
+\end{changemargin}
 Αντίστοιχα για το $a_2^{[1]}$
 θα είχαμε:
-$$a_2^{[1]}=f_A\left(\sum\limits_{i=1}^3\left[ w_{2i}^{[1]}\times a_i^{[0]}\right]+b_2\right)=f_A\left( w_{21}^{[1]}\times a_1^{[0]}+w_{22}^{[1]}\times a_2^{[0]}+w_{23}^{[1]}\times a_3^{[0]}+b_2\right)$$
+\begin{changemargin}{-1cm}{-1cm}
+    $$a_2^{[1]}=f_A\left(\sum\limits_{i=1}^3\left[ w_{2i}^{[1]}\times a_i^{[0]}\right]+b_2\right)=f_A\left( w_{21}^{[1]}\times a_1^{[0]}+w_{22}^{[1]}\times a_2^{[0]}+w_{23}^{[1]}\times a_3^{[0]}+b_2\right)$$
+\end{changemargin}
 Και ούτω καθεξής. Η σχέση αυτή γενικεύεται για $k$ επίπεδα και $n$ νευρώνες του κάθε
 επιπέδου:
 $$a_j^{[k]}=f_A\left(\sum\limits_{i=1}^n\left[ w_{ji}^{[k]}\times a_i^{[k-1]}\right]+b_j\right)$$
@@ -137,23 +183,26 @@ $$A^{[k]}=f_A(W^{[k]}\times A^{[k-1]}+B^{[k]})$$
 
 \subsection{Συναρτήσεις ενεργοποίησης}
 Οι συναρτήσεις ενεργοποίησης είναι ένα πολύ σημαντικό κομμάτι των νευρωνικών δικτύων διότι προσφέρουν μη γραμμικότητα (επιθυμητή) στο σύστημά μας. Για να καταλάβουμε καλύτερα τι σημαίνει αυτό θα δούμε ένα παράδειγμα\cite{nnactmlm}:
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \draw (0,0) circle (1) node{$x_2$};
+        \draw (0,3) circle (1) node{$x_1$};
+        \draw (5,0) circle (1) node{$h_2$};
+        \draw (5,3) circle (1) node{$h_1$};
+        \draw (10,1.5) circle (1) node{$y$};
 
-\begin{tikzpicture}
-    \draw (0,0) circle (1) node{$x_2$};
-    \draw (0,3) circle (1) node{$x_1$};
-    \draw (5,0) circle (1) node{$h_2$};
-    \draw (5,3) circle (1) node{$h_1$};
-    \draw (10,1.5) circle (1) node{$y$};
+        \draw[-latex] (1,0) -- (4,0) node[midway, below]{$w_4$};
+        \draw[-latex] (1,3) -- (4,3) node[midway, above]{$w_1$};
 
-    \draw[-latex] (1,0) -- (4,0) node[midway, below]{$w_4$};
-    \draw[-latex] (1,3) -- (4,3) node[midway, above]{$w_1$};
+        \draw[-latex] (0.7,0.7) -- (4.3,2.3) node[midway, above right=7pt]{$w_2$};
+        \draw[-latex] (0.7,2.3) -- (4.3,0.7) node[midway, below right=7pt]{$w_3$};
 
-    \draw[-latex] (0.7,0.7) -- (4.3,2.3) node[midway, above right=7]{$w_2$};
-    \draw[-latex] (0.7,2.3) -- (4.3,0.7) node[midway, below right=7]{$w_3$};
-
-    \draw[-latex] (5.95,2.7) -- (9.05,1.8) node[midway, above]{$w_5$};
-    \draw[-latex] (5.95,0.3) -- (9.05,1.2) node[midway, below]{$w_6$};
-\end{tikzpicture}
+        \draw[-latex] (5.95,2.7) -- (9.05,1.8) node[midway, above]{$w_5$};
+        \draw[-latex] (5.95,0.3) -- (9.05,1.2) node[midway, below]{$w_6$};
+    \end{tikzpicture}
+    \caption{Παράδειγμα νευρωνικού δικτύου χωρίς ενεργοποίηση}
+\end{figure}
 
 Βλεπουμε ότι η είσοδος με την έξοδο συνδέονται μέσω ενός κρυφού επιπέδου (\en{dense}) όπου:
 \begin{gather*}
@@ -215,19 +264,20 @@ $$f(x)=\tanh (x)=\frac{e^x-e^{-x}}{e^x+e^{-x}}$$
 Η συνάρτηση αυτή είναι καλύτερη επειδή αντιμετωπίζει το λεγόμενο \en{vanishing gradient problem}. Για να καταλάβουμε τι σημαίνει αυτό θα πρέπει να συγκρίνουμε τις παραγώγους των δύο συναρτήσεων:
 \begin{figure}[H]
     \centering
-    \begin{subfigure}{0.49\textwidth}
+    \begin{subfigure}{0.48\textwidth}
         \centering
         \begin{tikzpicture}
-        \begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, xmin = -5, xmax=5, ymin=0, ymax=1, xtick={-5,-4,...,5}, ytick={0,0.25,...,1}]
+        \begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, xmin = -5, xmax=5, ymin=0, ymax=1, xtick={-4,-3,...,4}, ytick={0,0.25,...,1}]
             \addplot[color=red]{(exp(x)/(exp(x)+1))*(1-(exp(x)/(exp(x)+1)))};
         \end{axis}
         \end{tikzpicture}
         \caption{\en{sigmoid derivative}}
     \end{subfigure}
-    \begin{subfigure}{0.49\textwidth}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
         \centering
         \begin{tikzpicture}
-        \begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, xmin = -5, xmax=5, ymin=0, ymax=1, xtick={-5,-4,...,5}, ytick={0,0.25,...,1}]
+        \begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, xmin = -5, xmax=5, ymin=0, ymax=1, xtick={-4,-3,...,4}, ytick={0,0.25,...,1}]
             \addplot[color=red]{1-tanh(x)^2};
         \end{axis}
         \end{tikzpicture}

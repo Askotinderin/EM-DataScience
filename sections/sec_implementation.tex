@@ -17,7 +17,7 @@
 Τα δύο επίπεδα που επιλέξαμε να υλοποιήσουμε είναι το \en{dense layer (fully connected)} και το \en{activation layer}. Πριν όμως υλοποιήσουμε τα επίπεδα διεπαφή (\en{interface}). Η διεπαφή αυτή είναι το επίπεδο και ο κώδικας φαίνεται
 παρακάτω.
 \begin{otherlanguage}{english}
-\begin{lstlisting}[style=cppstyle,caption=Layer Interface]
+\begin{lstlisting}[style=cppstyle,caption=Layer Interface, xleftmargin=-0.35cm, xrightmargin=-0.35cm]
 class Layer {
 public:
     virtual ~Layer () {}
@@ -34,6 +34,7 @@ public:
 
 Οι συναρτήσεις των οποίων επιβάλλεται η υλοποίηση είναι:
 \begin{description}
+    \sloppy
     \item[\en{forward}] Δέχεται έναν τένσορα σαν  είσοδο και τον επεξεργάζεται (τον μετατρέπει ουσιαστικά στην έξοδο για να μπει σαν είσοδος στο επόμενο επίπεδο). Αυτή η συνάρτηση χρησιμοποιείται κατά την εκπαίδευση δώσουμε μια είσοδο στο
     δίκτυο μας και να υπολογίσει την έξοδο.
     \item[\en{backwords}] Ουσιαστικά έχει ίδια χρήση με την \en{forward} αλλά ενώ η \en{forward} διαδίδει την είσοδο στην έξοδο η \en{backwords} διαδίδει το σφάλμα προς την αντίθετη κατεύθυνση (\en{Back Propagation}).
@@ -63,7 +64,7 @@ public:
 Εδώ βλέπουμε τις επιπλέον παραμέτρους που χρειάζονται για αυτό το επίπεδο. Βλέπουμε τέσσερις τένσορες. Οι δύο από αυτους χρησιμοποιούνται για τον υπολογισμό της εξόδου (\en{weigts} και \en{biases}), ενώ οι άλλοι δύο χρησιμοποιούνται για
 την αποθήκευση των εισόδων και των σφαλμάτων. Μπορούμε να δούμε την υλοποίηση των συναρτήσεων παρακάτω:
 \begin{otherlanguage}{english}
-\begin{lstlisting}[style=cppstyle,caption= Dense layer in cpp file]
+\begin{lstlisting}[style=cppstyle,caption= Dense layer in cpp file, xleftmargin=-0.1cm, xrightmargin=-0.1cm]
 Dense::Dense (size_t input_size, size_t output_size) {
     weights = new Tensor<double>(input_size, output_size);
     biases  = new Tensor<double>((size_t)1, output_size);
@@ -72,7 +73,8 @@ Dense::Dense (size_t input_size, size_t output_size) {
 
     for(size_t i = 0; i < input_size; i++) {
             for( size_t j = 0; j < output_size; j++) {
-                (*weights)(i, j) = rand()/(double)(RAND_MAX) - 0.5;
+                (*weights)(i, j) =
+                    rand()/(double)(RAND_MAX) - 0.5;
             }
         }
         for(size_t i = 0; i < output_size; i++) {
@@ -106,6 +108,7 @@ void Dense::fix (double learning_rate) {
 \end{otherlanguage}
 Οι συναρτήσεις είναι οι εξής:
 \begin{description}
+    \sloppy
     \item[\en{Desne (constructor)}] Δημιουργεί και αρχικοποιεί το επίπεδο. Συγκεκριμένα δέχεται το μέγεθος εισόδου και εξόδου και αρχικοποιεί με τα ανάλογα μεγέθη τους τους τένσορες για τα \en{weights} (αρχικοποιούνται τα στοιχεία του με
     τυχαίους αριθμους από -0.5 ως 0.5 )  και \en{biases} (αρχικοποιούνται σε μηδέν).
     \item[\en{\~\ Desne (destructor)}] Απελευθερώνει τη μνήμη που δέσμευαν οι τένσορες.
@@ -124,9 +127,11 @@ private:
     std::function<void(Tensor<double>*)> func;
     std::function<void(Tensor<double>*)> der;
 public:
-    Activation (    size_t input_size,
-                    std::function<void(Tensor<double>*)> func,
-                    std::function<void(Tensor<double>*)> der);
+    Activation (
+        size_t input_size,
+        std::function<void(Tensor<double>*)> func,
+        std::function<void(Tensor<double>*)> der);
+
     ~Activation ();
     void forward (Tensor<double>* propagator) override;
     void backwards (Tensor<double>* propagator) override;
@@ -140,9 +145,11 @@ public:
 συναρτήσεων για αυτό το επίπεδο είναι πολύ  πιο απλές.
 \begin{otherlanguage}{english}
 \begin{lstlisting}[style=cppstyle,caption= Activation layer in cpp file]
-Activation::Activation (    size_t input_size,
-                            std::function<void(Tensor<double>*)> func,
-                            std::function<void(Tensor<double>*)> der) {
+Activation::Activation (
+    size_t input_size,
+    std::function<void(Tensor<double>*)> func,
+    std::function<void(Tensor<double>*)> der) {
+
     inputs  = new Tensor<double>;
     this->func = func;
     this->der = der;
@@ -216,7 +223,9 @@ void der::linear (Tensor<double>* t) {
 προκύπτει ότι δεν είναι απαραίτητη η οπισθοδρόμηση από αυτό το επίπεδο αλλά μπορούμε να περάσουμε απευθείας στο προηγούμενο.
 
 \subsection{Δίκτυο}
+\sloppy
 Έχουμε λοιπόν υλοποιήσει τα δύο απαραίτητα επίπεδα για κάθε νευρωνικό δίκτυο μπορούμε να υλοποιήσουμε την κλάση του δικτύου.
+\fussy
 \begin{otherlanguage}{english}
 \begin{lstlisting}[style=cppstyle,caption= Network layer in hpp file]
 class Network : public Layer {
@@ -236,7 +245,7 @@ public:
 Βλέπουμε ότι το δίκτυο περιέχει μία λίστα από επίπεδα. Επιπλέον έχει όλες τις συναρτήσεις που είχαν και τα επίπεδα. Στη συνάρτηση \en{forward} διατρέχουμε για κάθε επίπεδο με τη σειρά και εκτελούμε τη συνάρτηση \en{forward} ενώ στη συνάρτηση
 όπως κάνουμε και στις \en{predict} και \en{fix} ενώ στην \en{backwards} διατρέχουμε τα επίπεδα με την ανάποδη σειρά. Επιπλέον έχουμε και μια συνάρτηση για προσθέτουμε επίπεδα στο δίκτυο μας. Η υλοποίηση φαίνεται παρακάτω.
 \begin{otherlanguage}{english}
-\begin{lstlisting}[style=cppstyle,caption= Network layer in cpp file]
+\begin{lstlisting}[style=cppstyle,caption= Network layer in cpp file, xleftmargin=-0.5cm, xrightmargin=-0.5cm]
 Network::Network () {
     layers = std::vector<Layer*>{};
 }
@@ -286,15 +295,17 @@ void Network::fix (double learning_rate) {
     \item Κατηγορηματική ταξινόμηση (\en{categorical classification})
     \item Πολυταξική ταξινόμηση (\en{multy class classification})
 \end{enumerate}
+
 \begin{otherlanguage}{english}
-\begin{lstlisting}[style=cppstyle,caption= Network layer in cpp file]
+\begin{lstlisting}[style=cppstyle,caption= Network layer in cpp file, xleftmargin=-1.4cm, xrightmargin=-1.4cm]
 double err::regression (Tensor<double>* p, const Tensor<double>& e) {
     *p = *p - e;
     double cost = (abs(*p)[0][1]/(double)(p->dims()[0])).vec()[0];
     return cost;
 }
 double err::binary (Tensor<double>* p, const Tensor<double>& e) {
-    Tensor<double> loss = -(e*log(*p) + ((double)1 - e)*log((double)1 - *p));
+    Tensor<double> loss =
+         -(e*log(*p) + ((double)1 - e)*log((double)1 - *p));
     *p = *p - e;
     double cost = (loss[0]/(double)(loss.dims()[0])).vec()[0];
     return cost;
@@ -306,7 +317,8 @@ double err::categorical (Tensor<double>* p, const Tensor<double>& e) {
     return cost;
 }
 double err::multyclass (Tensor<double>* p, const Tensor<double>& e) {
-    Tensor<double> loss = (-(e*log(*p) + ((double)1 - e)*log((double)1 - *p)))[1];
+    Tensor<double> loss =
+        (-(e*log(*p) + ((double)1 - e)*log((double)1 - *p)))[1];
     *p = *p - e;
     double cost = (loss[0]/(double)(loss.dims()[0])).vec()[0];
     return cost;
