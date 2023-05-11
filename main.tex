@@ -2,7 +2,9 @@
 \usepackage{import}
 \usepackage{xcolor}
 \usepackage{url}
-\usepackage{hyperref}
+\def\UrlBreaks{\do\/\do-}
+\usepackage{breakurl}
+\usepackage[breaklinks]{hyperref}
 \usepackage{graphicx}
 \usepackage{amsfonts, amssymb, amsmath}
 \usepackage[super,square]{natbib}
@@ -101,6 +103,7 @@
 
 \begin{document}
 \import{preamble}{title}
+\import{preamble}{abstract}
 \newpage
 \tableofcontents
 \newpage
