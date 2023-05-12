@@ -1,6 +1,7 @@
 \documentclass[12pt, a4paper]{article}
 \usepackage{import}
 \usepackage{xcolor}
+\usepackage{colortbl}
 \usepackage{url}
 \def\UrlBreaks{\do\/\do-}
 \usepackage{breakurl}
@@ -30,6 +31,9 @@
     \setlength{\parsep}{\parskip}%
     }%
     \item[]}{\end{list}}
+
+\renewcommand\lstlistingname{\textgreek{Αλγόριθμος}}
+\renewcommand\lstlistlistingname{\textgreek{Κατάλογος αλγορίθμων}}
 
 \lstdefinestyle{cppstyle}{
     language = C++,
@@ -108,6 +112,10 @@
 \tableofcontents
 \newpage
 \listoffigures
+\listoftables
+\begin{otherlanguage}{english}
+    \lstlistoflistings
+\end{otherlanguage}
 \import{sections}{sec_introduction}
 \import{sections}{sec_Classification}
 \import{sections}{sec_regression}

@@ -398,12 +398,117 @@ $$I_B=E_{parent}-\frac{4}{20}E_{B1}-\frac{16}{20}E_{B2}=0.24$$
 θα αποτελείται από τέσσερα δέντρα.
 \begin{table}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/random_forest.png}
+    \begin{tabular}{|c|c|c|c|c|c|c|}
+        \hline
+        \en{id} & $x_0$ & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $y$ \\
+        \hline
+        \rowcolor{orange!20}
+        0 & 4.3 & 4.9 & 4.1 & 4.7 & 5.5 & 0 \\
+        \hline
+        \rowcolor{yellow!20}
+        1 & 3.9 & 6.1 & 5.9 & 5.5 & 5.9 & 0 \\
+        \hline
+        \rowcolor{red!20}
+        2 & 2.7 & 4.8 & 4.1 & 5.0 & 5.6 & 0 \\
+        \hline
+        \rowcolor{cyan!20}
+        3 & 6.6 & 4.4 & 4.5 & 3.9 & 5.9 & 1 \\
+        \hline
+        \rowcolor{lightgray!20}
+        4 & 6.5 & 2.9 & 4.7 & 4.6 & 6.1 & 1 \\
+        \hline
+        \rowcolor{green!20}
+        5 & 2.7 & 6.7 & 4.2 & 5.3 & 4.8 & 1 \\
+        \hline
+    \end{tabular}
     \caption{Σύνολο δεδομένων για τον αλγόριθμο \textlatin{random forest}}
 \end{table}
 \begin{table}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/random_forest_split.png}
+    \begin{subtable}{0.24\textwidth}
+        \centering
+        \begin{tabular}{|c|}
+            \hline
+            \en{id} \\
+            \hline
+            \cellcolor{red!20}2 \\
+            \hline
+            \cellcolor{orange!20}0 \\
+            \hline
+            \cellcolor{red!20}2 \\
+            \hline
+            \cellcolor{lightgray!20}4 \\
+            \hline
+            \cellcolor{green!20}5 \\
+            \hline
+            \cellcolor{green!20}5 \\
+            \hline
+        \end{tabular}
+        \caption{δέντρο 1}
+    \end{subtable}
+    \begin{subtable}{0.24\textwidth}
+        \centering
+        \begin{tabular}{|c|}
+            \hline
+            \en{id} \\
+            \hline
+            \cellcolor{red!20}2 \\
+            \hline
+            \cellcolor{yellow!20}1 \\
+            \hline
+            \cellcolor{cyan!20}3 \\
+            \hline
+            \cellcolor{yellow!20}1 \\
+            \hline
+            \cellcolor{lightgray!20}4 \\
+            \hline
+            \cellcolor{lightgray!20}4 \\
+            \hline
+        \end{tabular}
+        \caption{δέντρο 2}
+    \end{subtable}
+    \begin{subtable}{0.24\textwidth}
+        \centering
+        \begin{tabular}{|c|}
+            \hline
+            \en{id} \\
+            \hline
+            \cellcolor{lightgray!20}4 \\
+            \hline
+            \cellcolor{yellow!20}1 \\
+            \hline
+            \cellcolor{cyan!20}3 \\
+            \hline
+            \cellcolor{orange!20}0 \\
+            \hline
+            \cellcolor{orange!20}0 \\
+            \hline
+            \cellcolor{red!20}2 \\
+            \hline
+        \end{tabular}
+        \caption{δέντρο 3}
+    \end{subtable}
+    \begin{subtable}{0.24\textwidth}
+        \centering
+        \begin{tabular}{|c|}
+            \hline
+            \en{id} \\
+            \hline
+            \cellcolor{cyan!20}3 \\
+            \hline
+            \cellcolor{cyan!20}3 \\
+            \hline
+            \cellcolor{red!20}2 \\
+            \hline
+            \cellcolor{green!20}5 \\
+            \hline
+            \cellcolor{yellow!20}1 \\
+            \hline
+            \cellcolor{red!20}2 \\
+            \hline
+        \end{tabular}
+        \caption{δέντρο 4}
+    \end{subtable}
     \caption{Σύνολο δεδομένων για κάθε δέντρο}
 \end{table}
 
